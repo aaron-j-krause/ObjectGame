@@ -1,0 +1,195 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<title>ROCK PAPER SCISSORS WAR</title>
+	<style type="text/css">
+		p{
+			font-family: Helvetica;
+			margin: 1px;
+			font-size: 12px;
+		}
+		div{
+			display: inline-block;
+			float:left;
+		}
+		#hp{
+			margin-bottom: 4px;
+		}
+		#results{
+			margin-left: 40px;
+		}
+		aside{
+			border-right: 1px solid black;
+			display: inline-block;
+			float:left;
+			padding-right: 20px;
+		}
+	</style>
+</head>
+
+<body>
+
+<h1>ROCK PAPER SCISSORS WAR</h1>
+<aside>
+	<h3>Choose Your Monster</h3>
+		<form>
+			<label> RockyBalboa <input class = "mons" name = "monsters" type = "radio" value = "0"/></label><br/>
+			<label> PaperTiger <input class = "mons" name = "monsters" type = "radio" value = "1"/></label><br/>
+			<label> Cutty <input class = "mons" name = "monsters" type = "radio" value = "2"/></label><br/>
+			<label> RockLobster <input class = "mons" name = "monsters" type = "radio" value = "3"/></label><br/>
+			<label> PaperBoy <input class = "mons" name = "monsters" type = "radio" value = "4"/></label><br/>
+			<label> CutlassSupreme <input class = "mons" name = "monsters" type = "radio" value = "5"/></label><br/>
+			<label> Ragnarock <input class = "mons" name = "monsters" type = "radio" value = "6"/></label><br/>
+			<label> DarthPaper <input class = "mons" name = "monsters" type = "radio" value = "7"/></label><br/>
+			<label> TigerUpperCut <input class = "mons" name = "monsters" type = "radio" value = "8"/></label><br/>
+			<input type = "button" onCLick = "battler()" value = "FIGHT">
+		</form>
+</aside>
+<div id = "results"></div>
+<script>
+
+//constructor
+function Monster(name){
+	this.name = name;
+	this.arsenal = ['rock','paper','scissors'];
+	this.maxHp = 30;
+	this.hp = 30;
+	this.attack = 10;
+	this.armor = 4;
+	this.used = false;
+}
+function isChecked(radios){
+	var x;
+	for(var i = 0; i < radios.length; i++){
+		if(radios[i].checked){
+		x =  radios[i].value;
+		}
+	}
+	return x;
+}
+//creates array of monsters as objects
+function monsterMaker(){
+	var monsters = [],
+		names = ['RockyBalboa','PaperTiger','Cutty','RockLobster','PaperBoy',
+				'CutlassSupreme','Ragnarock','DarthPaper','TigerUpperCut'];
+	for(var i = 0, len = names.length; i < len; i++){
+		var mons = new Monster(names[i]),
+			arsenal = mons.arsenal;
+		if(i < 3){
+			arsenal.push('scissors');
+		} else if(i < 6){
+			arsenal.push('paper');
+		} else {
+			arsenal.push('rock');
+		}
+		if(mons.name.indexOf('ut') != -1){
+			arsenal.push('scissors');
+			mons.attack += 4;
+		} else if (mons.name.indexOf('aper') != -1){
+			arsenal.push('paper');
+			mons.maxHp += 10;
+			mons.hp += 10;
+		} else {
+			arsenal.push('rock');
+			mons.armor += 4;
+		}
+		monsters.push(mons);
+	}
+	return monsters;
+}
+
+
+
+//function for individual fights
+function fight(player, opponent){
+	var msg = '<h4>' + player.name + ' vs ' + opponent.name + '</h4>';
+	do{
+		//assign strings from rock paper scissors array
+		var str1 = player.arsenal[Math.floor(Math.random()*5)],
+			str2 = opponent.arsenal[Math.floor(Math.random()*5)];
+		//compare strings deal damage
+		if((str1 == 'rock' && str2 == 'scissors') || (str1 == 'scissors' && str2 == 'paper') || (str1 == 'paper' && str2 == 'rock')){
+			var dmg = player.attack - opponent.armor;
+			msg += '<p style = "color:green">' + 'You throw ' + str1 + ' and ' + opponent.name + ' throws ' + str2 + '! Your enemy strikes! Their blade flashes past your shield and hits for ' + dmg + ' damage!'  + '</p>';
+
+			opponent.hp -= dmg;
+		} else if((str1 == 'rock' && str2 == 'paper') || (str1 == 'scissors' && str2 == 'rock') || (str1 == 'paper' && str2 == 'scissors')){
+			var dmg = opponent.attack - player.armor;
+			msg += '<p style = "color: red">' + 'You throw ' + str1 + ' and ' + opponent.name + ' throws ' + str2 + '! Your enemy strikes! Their blade flashes past your shield and hits for ' + dmg + ' damage!'  + '</p>';
+
+			player.hp -= dmg;
+		} else {
+			msg += '<p>' + 'You throw ' + str1 + ' and ' + opponent.name + ' throws ' + str2 + '! A draw! Your blades clash together and no damage is dealt.' + '</p>';
+
+		}
+		msg += '<p style="color:blueviolet" id="hp">' + 'You have ' + player.hp + ' hp and ' + opponent.name + ' has ' + opponent.hp + 'hp.' + '</p>';
+	}while (player.hp>0 && opponent.hp>0);
+
+	//set boolean for outer loop
+	if (player.hp > opponent.hp){
+		msg += '<p style="font-size: 18px; color:green">' + 'YOU WIN' + '</p>';
+		nextFight = true;
+	} else {
+		msg += '<p style="font-size: 18px; color:red">' + 'YOU LOSE' + '</p>';
+		nextFight = false;
+	}
+
+	//reset hp
+	player.hp = player.maxHp;
+	opponent.hp = opponent.maxHp;
+	return [nextFight, msg];
+
+}
+
+//function for whole match
+function battler(){
+	function chooseOpponent(){
+		//set opponent from pool of monsters that haven't been picked
+		do{
+			opponent = monsters[Math.floor(Math.random()*9)]
+		}while(opponent.used);
+		opponent.used = true;
+	}
+
+	// pick fighter
+	var selection = document.querySelectorAll('.mons'),
+		p = isChecked(selection),
+		monsters = monsterMaker(),
+		player = monsters[p],
+		ret,
+		nextFight,
+		opponent,
+		msg,
+		results = document.getElementById('results');
+	
+
+	player.used = true;
+	chooseOpponent();
+
+	//fights
+	ret = fight(player,opponent);
+	nextFight = ret[0];
+	chooseOpponent();
+	msg = ret[1];
+
+
+	if(nextFight){
+	ret = fight(player,opponent);
+	nextFight = ret[0];
+	msg += ret[1];
+	chooseOpponent();
+	}
+
+
+	if(nextFight){
+	ret = fight(player,opponent);
+	msg += ret[1];
+	}
+	//display results
+	results.innerHTML = msg;
+}
+
+</script>
+
+</body>
+</html>

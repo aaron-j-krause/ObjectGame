@@ -1,0 +1,2 @@
+This is the game I made for my Codefellows homework.
+I might have strayed just a little bit from the original instructions, but it involves an object constructor and a function based game with thos objects.
