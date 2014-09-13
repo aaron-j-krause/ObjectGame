@@ -110,7 +110,7 @@ function fight(player, opponent){
 		//compare strings deal damage
 		if((str1 == 'rock' && str2 == 'scissors') || (str1 == 'scissors' && str2 == 'paper') || (str1 == 'paper' && str2 == 'rock')){
 			var dmg = player.attack - opponent.armor;
-			msg += '<p style = "color:green">' + 'You throw ' + str1 + ' and ' + opponent.name + ' throws ' + str2 + '! Your enemy strikes! Their blade flashes past your shield and hits for ' + dmg + ' damage!'  + '</p>';
+			msg += '<p style = "color:green">' + 'You throw ' + str1 + ' and ' + opponent.name + ' throws ' + str2 + '! A hit! Your sword slices through the air striking your enemy for ' + dmg + ' damage!'  + '</p>';
 
 			opponent.hp -= dmg;
 		} else if((str1 == 'rock' && str2 == 'paper') || (str1 == 'scissors' && str2 == 'rock') || (str1 == 'paper' && str2 == 'scissors')){
