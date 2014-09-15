@@ -84,11 +84,12 @@ function monsterMaker(){
 		}
 		if(mons.name.indexOf('ut') != -1){
 			arsenal.push('scissors');
-			mons.attack += 4;
+			mons.attack += 6;
 		} else if (mons.name.indexOf('aper') != -1){
 			arsenal.push('paper');
-			mons.maxHp += 10;
-			mons.hp += 10;
+			mons.maxHp += 20;
+			mons.hp += 20;
+			mons.attack +=2;
 		} else {
 			arsenal.push('rock');
 			mons.armor += 4;
@@ -187,6 +188,33 @@ function battler(){
 	}
 	//display results
 	results.innerHTML = msg;
+}
+function testAll(){
+	var mons = monsterMaker(),
+		pairs = [],
+		plyr,
+		enmy,
+		rets;
+	for (var i = 0; i < mons.length; i++) {
+		for (var j = i + 1; j < mons.length; j++) {
+			pairs.push([mons[i], mons[j]]);
+		};
+	};
+	for (var i = 0; i < pairs.length; i++) {
+		plyr = 0,
+		enmy = 0;
+		for (var j = 0; j < 5000; j++) {
+			rets = fight(pairs[i][0], pairs[i][1]);
+			if(rets[0]){
+				plyr++;
+			} else {
+				enmy++;
+			}
+
+		};
+		console.log(pairs[i][0].name + " vs " + pairs[i][1].name + " " + plyr + " : " + enmy);
+	};
+
 }
 
 </script>
