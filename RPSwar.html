@@ -57,6 +57,7 @@ function Monster(name){
 	this.attack = 10;
 	this.armor = 4;
 	this.used = false;
+	this.bonus = 0;
 }
 function isChecked(radios){
 	var x;
@@ -85,14 +86,17 @@ function monsterMaker(){
 		if(mons.name.indexOf('ut') != -1){
 			arsenal.push('scissors');
 			mons.attack += 6;
+			mons.type = 'scissors';
 		} else if (mons.name.indexOf('aper') != -1){
 			arsenal.push('paper');
 			mons.maxHp += 20;
 			mons.hp += 20;
-			mons.attack +=2;
+			//mons.attack +=2;
+			mons.type = 'paper'
 		} else {
 			arsenal.push('rock');
-			mons.armor += 4;
+			mons.armor += 3;
+			mons.type = 'rock';
 		}
 		monsters.push(mons);
 	}
@@ -104,18 +108,24 @@ function monsterMaker(){
 //function for individual fights
 function fight(player, opponent){
 	var msg = '<h4>' + player.name + ' vs ' + opponent.name + '</h4>';
+	if((player.type == 'rock' && opponent.type == 'scissors') || (player.type == 'scissors' && opponent.type == 'paper') || (player.type == 'paper' && opponent.type == 'scissors')){
+		player.bonus += 2;
+	}
+	if((opponent.type == 'rock' && player.type == 'scissors') || (opponent.type == 'scissors' && player.type == 'paper') || (opponent.type == 'paper' && player.type == 'scissors')){
+		opponent.bonus += 2;
+	}
 	do{
 		//assign strings from rock paper scissors array
 		var str1 = player.arsenal[Math.floor(Math.random()*5)],
 			str2 = opponent.arsenal[Math.floor(Math.random()*5)];
 		//compare strings deal damage
 		if((str1 == 'rock' && str2 == 'scissors') || (str1 == 'scissors' && str2 == 'paper') || (str1 == 'paper' && str2 == 'rock')){
-			var dmg = player.attack - opponent.armor;
+			var dmg = player.attack - (opponent.armor + opponent.bonus);
 			msg += '<p style = "color:green">' + 'You throw ' + str1 + ' and ' + opponent.name + ' throws ' + str2 + '! A hit! Your sword slices through the air striking your enemy for ' + dmg + ' damage!'  + '</p>';
 
 			opponent.hp -= dmg;
 		} else if((str1 == 'rock' && str2 == 'paper') || (str1 == 'scissors' && str2 == 'rock') || (str1 == 'paper' && str2 == 'scissors')){
-			var dmg = opponent.attack - player.armor;
+			var dmg = opponent.attack - (player.armor + player.bonus);
 			msg += '<p style = "color: red">' + 'You throw ' + str1 + ' and ' + opponent.name + ' throws ' + str2 + '! Your enemy strikes! Their blade flashes past your shield and hits for ' + dmg + ' damage!'  + '</p>';
 
 			player.hp -= dmg;
@@ -135,9 +145,11 @@ function fight(player, opponent){
 		nextFight = false;
 	}
 
-	//reset hp
+	//reset hp/bonus
 	player.hp = player.maxHp;
 	opponent.hp = opponent.maxHp;
+	player.bonus = 0;
+	opponent.bonus = 0;
 	return [nextFight, msg];
 
 }
